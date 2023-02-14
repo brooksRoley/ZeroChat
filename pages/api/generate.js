@@ -15,11 +15,11 @@ export default async function (req, res) {
     return;
   }
 
-  const animal = req.body.animal || '';
-  if (animal.trim().length === 0) {
+  const thought = req.body.thought || '';
+  if (thought.trim().length === 0) {
     res.status(400).json({
       error: {
-        message: "Please enter a valid animal",
+        message: "Please enter a valid thought",
       }
     });
     return;
@@ -28,7 +28,7 @@ export default async function (req, res) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(animal),
+      prompt: generatePrompt(thought),
       temperature: 0.6,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
@@ -48,15 +48,15 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(animal) {
-  const capitalizedAnimal =
-    animal[0].toUpperCase() + animal.slice(1).toLowerCase();
-  return `Suggest three names for an animal that is a superhero.
+function generatePrompt(thought) {
+  return getPrompt(thought);
+}
 
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${capitalizedAnimal}
-Names:`;
+function getPrompt(thought) {
+  return `Brooks: Hello, I have just landed on a website written by Brooks Roley for the purpose of practicing web development and machine learning.
+  I would like to converse with the user of my SPA that will act as my public facing internet presence and resume.
+  The user will be prompted to provide a topic which we should respond to with wit, charm, and compassion.
+  Suggest three rhymes for a simple statement from the perspective of a therapist giving compassionate advice.
+  User: ${thought}
+  Brooks:`;
 }
